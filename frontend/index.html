@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    EDEV Inventory Management
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+</head>
+
+<body>
+
+  <!-- ================= HEADER ================= -->
+
+  <header>
+
+    <div class="logo">
+
+      🏭 TATA STEEL
+
+    </div>
+
+    <div class="title">
+
+      EDEV Inventory Management System
+
+    </div>
+
+    <div id="time"></div>
+
+  </header>
+
+
+
+  <!-- ================= LOGIN PAGE ================= -->
+
+  <div
+    class="card"
+    id="loginPage">
+
+    <div class="loginIcon">
+
+      🔐
+
+    </div>
+
+    <h1>
+
+      Employee Login
+
+    </h1>
+
+    <input
+      id="loginUsername"
+      type="text"
+      placeholder="Enter Username"
+      autocomplete="off"
+    >
+
+    <input
+      id="loginPassword"
+      type="password"
+      placeholder="Enter Password"
+      autocomplete="new-password"
+    >
+
+    <button onclick="login()">
+
+      Login
+
+    </button>
+
+    <div class="switchPage">
+
+      Don't have an account?
+
+      <span onclick="showSignup()">
+
+        Signup
+
+      </span>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ================= SIGNUP PAGE ================= -->
+
+  <div
+    class="card hidden"
+    id="signupPage">
+
+    <div class="loginIcon">
+
+      📝
+
+    </div>
+
+    <h1>
+
+      Employee Signup
+
+    </h1>
+
+    <input
+      id="signupName"
+      type="text"
+      placeholder="Enter Full Name"
+    >
+
+    <input
+      id="signupUsername"
+      type="text"
+      placeholder="Enter Username"
+    >
+
+    <input
+      id="signupPassword"
+      type="password"
+      placeholder="Enter Password"
+    >
+
+    <button onclick="signup()">
+
+      Signup
+
+    </button>
+
+    <div class="switchPage">
+
+      Already have an account?
+
+      <span onclick="showLogin()">
+
+        Login
+
+      </span>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ================= DASHBOARD ================= -->
+
+  <div
+    class="card hidden"
+    id="dashboard">
+
+    <!-- WELCOME PANEL -->
+
+    <div class="welcomePanel">
+
+      <div class="welcomeIcon">
+
+        👤
+
+      </div>
+
+      <div>
+
+        <h1 id="welcome">
+
+          WELCOME
+
+        </h1>
+
+        <p class="welcomeSub">
+
+          Smart Inventory Control Dashboard
+
+        </p>
+
+        <!-- ACTIVE USERS -->
+
+        <div
+          id="userCounter"
+          class="hidden">
+
+          👥 Active Employees Online:
+
+          <span id="activeUsersCount">
+
+            0
+
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- DASHBOARD BUTTONS -->
+
+    <div class="dashboardButtons">
+
+      <button onclick="openPage('entry')">
+
+        📦 Material Entry
+
+      </button>
+
+      <button onclick="openPage('dispatch')">
+
+        🚚 Material Dispatch
+
+      </button>
+
+      <button onclick="openPage('locator')">
+
+        📍 Item Locator
+
+      </button>
+
+      <button
+        id="adminBtn"
+        class="hidden"
+        onclick="openPage('adminPanel')">
+
+        🔐 Admin Panel
+
+      </button>
+
+      <button
+        id="loggedUsersBtn"
+        class="hidden"
+        onclick="openPage('loggedUsersPage')">
+
+        👥 Logged In Users
+
+      </button>
+
+      <button onclick="logout()">
+
+        🔓 Logout
+
+      </button>
+
+    </div>
+
+
+
+    <!-- ONLY CRITICAL STOCK -->
+
+    <div class="criticalSection">
+
+      <h2>
+
+        ⚠ Critical Stock Alert
+
+      </h2>
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>Material</th>
+
+            <th>Quantity</th>
+
+            <th>Location</th>
+
+            <th>Status</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody id="criticalTable">
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ================= ENTRY PAGE ================= -->
+
+  <div
+    class="card hidden"
+    id="entry">
+
+    <h1>
+
+      📦 Material Entry
+
+    </h1>
+
+    <select
+      id="entryCategory">
+
+      <option value="office">
+
+        Office
+
+      </option>
+
+      <option value="project">
+
+        Project
+
+      </option>
+
+    </select>
+
+    <input
+      id="entryType"
+      placeholder="Material Type"
+    >
+
+    <input
+      id="entryName"
+      placeholder="Material Name"
+    >
+
+    <input
+      id="entryQty"
+      type="number"
+      placeholder="Quantity"
+    >
+
+    <input
+      id="entryLocation"
+      placeholder="Location"
+    >
+
+    <input
+      id="entryRemarks"
+      placeholder="Remarks"
+    >
+
+    <button onclick="submitMaterial('entry')">
+
+      Save Material
+
+    </button>
+
+    <button onclick="back()">
+
+      ⬅ Back
+
+    </button>
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>Name</th>
+
+          <th>Quantity</th>
+
+          <th>Location</th>
+
+          <th>Actions</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="entryTable"></tbody>
+
+    </table>
+
+  </div>
+
+
+
+  <!-- ================= DISPATCH PAGE ================= -->
+
+<div
+  class="card hidden"
+  id="dispatch">
+
+  <h1>
+
+    🚚 Material Dispatch
+
+  </h1>
+
+  <select
+    id="dispatchCategory"
+    onchange="toggleFields('dispatch')">
+
+    <option value="office">
+
+      Office
+
+    </option>
+
+    <option value="project">
+
+      Project
+
+    </option>
+
+  </select>
+
+  <input
+    id="dispatchType"
+    placeholder="Material Type"
+  >
+
+  <input
+    id="dispatchName"
+    placeholder="Material Name"
+  >
+
+  <input
+    id="dispatchQty"
+    type="number"
+    placeholder="Quantity"
+  >
+
+  <input
+    id="dispatchLocation"
+    placeholder="Location"
+  >
+
+  <input
+    id="dispatchRemarks"
+    placeholder="Remarks"
+  >
+
+  <div id="dispatchOfficeFields">
+
+    <input
+      id="dispatchReceiver"
+      placeholder="Receiver Name"
+    >
+
+    <input
+      id="dispatchMobile"
+      placeholder="Mobile Number"
+    >
+
+  </div>
+
+  <button onclick="submitMaterial('dispatch')">
+
+    Dispatch Material
+
+  </button>
+
+  <button onclick="back()">
+
+    ⬅ Back
+
+  </button>
+
+  <table>
+
+    <thead>
+
+      <tr>
+
+        <th>Name</th>
+
+        <th>Quantity</th>
+
+        <th>Location</th>
+
+        <th>Receiver</th>
+
+        <th>Action</th>
+
+      </tr>
+
+    </thead>
+
+    <tbody id="dispatchTable"></tbody>
+
+  </table>
+
+</div>
+
+
+
+
+  <!-- ================= LOCATOR PAGE ================= -->
+
+  <div
+    class="card hidden"
+    id="locator">
+
+    <h1>
+
+      📍 Item Locator
+
+    </h1>
+
+    <input
+      id="locName"
+      placeholder="Material Name"
+    >
+
+    <button onclick="searchLocator()">
+
+      Search
+
+    </button>
+
+    <button onclick="back()">
+
+      ⬅ Back
+
+    </button>
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>Name</th>
+
+          <th>Quantity</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="locatorTable"></tbody>
+
+    </table>
+
+  </div>
+
+
+
+  <!-- ================= ADMIN PANEL ================= -->
+
+  <div
+    class="card hidden"
+    id="adminPanel">
+
+    <h1>
+
+      🔐 ADMIN PANEL
+
+    </h1>
+
+    <input
+      id="targetUsername"
+      placeholder="Employee Username"
+    >
+
+    <input
+      id="newPassword"
+      type="password"
+      placeholder="New Password"
+    >
+
+    <button onclick="changePassword()">
+
+      Change Password
+
+    </button>
+
+    <br>
+
+    <button onclick="back()">
+
+      ⬅ Back
+
+    </button>
+
+  </div>
+
+
+
+  <!-- ================= LOGGED USERS PAGE ================= -->
+
+  <div
+    class="card hidden"
+    id="loggedUsersPage">
+
+    <h1>
+
+      👥 Active Employees
+
+    </h1>
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>Name</th>
+
+          <th>Username</th>
+
+          <th>Status</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="loggedUsersTable">
+
+      </tbody>
+
+    </table>
+
+    <br>
+
+    <button onclick="back()">
+
+      ⬅ Back
+
+    </button>
+
+  </div>
+
+
+
+  <!-- ================= EDIT MODAL ================= -->
+
+  <div
+    class="modal hidden"
+    id="editModal">
+
+    <div class="modalContent">
+
+      <h2>
+
+        ✏ Edit Material
+
+      </h2>
+
+      <input
+        id="editName"
+        placeholder="Material Name"
+      >
+
+      <input
+        id="editQty"
+        type="number"
+        placeholder="Quantity"
+      >
+
+      <button onclick="updateMaterial()">
+
+        Update
+
+      </button>
+
+      <button onclick="closeModal()">
+
+        Cancel
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <script src="script.js"></script>
+
+</body>
+
+</html>
