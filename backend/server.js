@@ -1,10 +1,10 @@
 const express = require("express");
 
+const mongoose = require("mongoose");
+
 const cors = require("cors");
 
 require("dotenv").config();
-
-const mongoose = require("mongoose");
 
 const authRoutes =
 require("./routes/authRoutes");
@@ -18,22 +18,21 @@ app.use(cors());
 
 app.use(express.json());
 
-mongoose.connect(
-  process.env.MONGO_URL
-)
+app.get("/", (req,res)=>{
+
+  res.send("Backend Running");
+});
+
+mongoose.connect(process.env.MONGO_URL)
 
 .then(() => {
 
-  console.log(
-    "MongoDB Connected"
-  );
-
+  console.log("MongoDB Connected");
 })
 
-.catch((error) => {
+.catch(error => {
 
   console.log(error);
-
 });
 
 app.use("/", authRoutes);

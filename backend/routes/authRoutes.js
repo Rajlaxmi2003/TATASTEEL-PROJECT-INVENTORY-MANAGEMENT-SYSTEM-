@@ -20,14 +20,14 @@ router.post(
   authController.logout
 );
 
-router.get(
-  "/logged-users",
-  authController.getLoggedEmployees
-);
-
 router.post(
   "/change-password",
   authController.changePassword
+);
+
+router.get(
+  "/logged-employees",
+  authController.getLoggedEmployees
 );
 
 module.exports = router;

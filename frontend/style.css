@@ -15,7 +15,8 @@ body{
   background-attachment:fixed;
 }
 
-/* HEADER */
+
+/* ================= HEADER ================= */
 
 header{
   width:100%;
@@ -39,13 +40,15 @@ header{
 .title{
   font-size:32px;
   font-weight:600;
+  text-align:center;
 }
 
 #time{
   font-size:18px;
 }
 
-/* CARD */
+
+/* ================= CARD ================= */
 
 .card{
   width:92%;
@@ -60,7 +63,8 @@ header{
   margin:40px auto;
 }
 
-/* LOGIN PAGE */
+
+/* ================= LOGIN PAGE ================= */
 
 #loginPage{
   width:100%;
@@ -87,10 +91,10 @@ header{
   margin-bottom:25px;
 }
 
-/* INPUTS */
 
-input,
-select{
+/* ================= INPUTS ================= */
+
+input{
   width:100%;
   max-width:270px;
   padding:15px;
@@ -101,7 +105,6 @@ select{
   font-size:17px;
   background:rgba(255,255,255,0.15);
   color:white;
-  backdrop-filter:blur(8px);
   border:2px solid transparent;
   transition:0.3s;
 }
@@ -110,14 +113,34 @@ input::placeholder{
   color:rgba(255,255,255,0.75);
 }
 
-input:hover,
-input:focus,
-select:hover,
-select:focus{
-  border:2px solid #001f4d;
+
+/* ================= SELECT ================= */
+
+select{
+  width:100%;
+  max-width:270px;
+  padding:15px;
+  margin:10px 0;
+  border:none;
+  border-radius:12px;
+  outline:none;
+  font-size:17px;
+  background:#ffffff;
+  color:#00264d;
+  font-weight:600;
 }
 
-/* BUTTONS */
+
+/* ================= FOCUS EFFECT ================= */
+
+input:focus,
+select:focus{
+  border:2px solid #001f4d;
+  box-shadow:0 0 10px rgba(0,31,77,0.4);
+}
+
+
+/* ================= BUTTONS ================= */
 
 button{
   padding:14px 24px;
@@ -142,7 +165,8 @@ button:hover{
   max-width:270px;
 }
 
-/* DASHBOARD */
+
+/* ================= DASHBOARD ================= */
 
 .dashboardButtons{
   display:flex;
@@ -155,7 +179,8 @@ button:hover{
   min-width:220px;
 }
 
-/* WELCOME PANEL */
+
+/* ================= WELCOME PANEL ================= */
 
 .welcomePanel{
   width:100%;
@@ -190,14 +215,15 @@ button:hover{
   margin-top:10px;
 }
 
-/* TABLE */
+
+/* ================= TABLE ================= */
 
 table{
   width:100%;
   margin-top:25px;
   border-collapse:collapse;
-  overflow:hidden;
   border-radius:14px;
+  overflow:hidden;
   background:rgba(255,255,255,0.08);
 }
 
@@ -205,7 +231,6 @@ th{
   background:#003366;
   color:white;
   padding:16px;
-  font-size:16px;
 }
 
 td{
@@ -219,7 +244,8 @@ tr:hover{
   background:rgba(255,255,255,0.08);
 }
 
-/* MODAL */
+
+/* ================= MODAL (FULL FIXED + PROFESSIONAL) ================= */
 
 .modal{
   position:fixed;
@@ -227,7 +253,7 @@ tr:hover{
   left:0;
   width:100%;
   height:100%;
-  background:rgba(0,0,0,0.6);
+  background:rgba(0,0,0,0.65);
   display:flex;
   justify-content:center;
   align-items:center;
@@ -235,24 +261,73 @@ tr:hover{
 }
 
 .modalContent{
-  width:400px;
+  width:420px;
+  max-width:90%;
+  max-height:90vh;
+  overflow-y:auto;
   background:white;
-  padding:35px;
-  border-radius:20px;
+  padding:30px;
+  border-radius:18px;
   text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
+  animation: pop 0.2s ease-in-out;
+}
+
+/* popup animation */
+@keyframes pop{
+  from{
+    transform:scale(0.9);
+    opacity:0;
+  }
+  to{
+    transform:scale(1);
+    opacity:1;
+  }
 }
 
 .modalContent h2{
   color:#003366;
-  margin-bottom:20px;
+  margin-bottom:15px;
 }
 
-.modalContent input{
-  color:black;
-  background:#f2f5fa;
+/* modal inputs */
+.modalContent input,
+.modalContent select{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border-radius:10px;
+  border:1px solid #ccc;
+  outline:none;
+  font-size:15px;
+  color:#00264d;
+  background:#f7f9fc;
 }
 
-/* CRITICAL SECTION */
+/* focus effect */
+.modalContent input:focus,
+.modalContent select:focus{
+  border:1px solid #004080;
+  box-shadow:0 0 8px rgba(0,64,128,0.3);
+}
+
+/* modal buttons */
+.modalContent button{
+  width:48%;
+  margin-top:15px;
+}
+
+/* cancel button style */
+.modalContent button:last-child{
+  background:linear-gradient(135deg,#666,#333);
+}
+
+.modalContent button:last-child:hover{
+  background:linear-gradient(135deg,#444,#111);
+}
+
+
+/* ================= CRITICAL SECTION ================= */
 
 .criticalSection{
   margin-top:40px;
@@ -267,7 +342,13 @@ tr:hover{
   text-align:center;
 }
 
-/* SWITCH PAGE */
+.lowStock{
+  color:#ff4d4d;
+  font-weight:bold;
+}
+
+
+/* ================= SWITCH PAGE ================= */
 
 .switchPage{
   text-align:center;
@@ -277,7 +358,7 @@ tr:hover{
 }
 
 .switchPage span{
-  color:#001f4d;
+  color:#00264d;
   cursor:pointer;
   font-weight:bold;
 }
@@ -286,13 +367,15 @@ tr:hover{
   text-decoration:underline;
 }
 
-/* HIDDEN */
+
+/* ================= HIDDEN ================= */
 
 .hidden{
   display:none !important;
 }
 
-/* RESPONSIVE */
+
+/* ================= RESPONSIVE ================= */
 
 @media(max-width:900px){
 
@@ -330,5 +413,10 @@ tr:hover{
 
   #welcome{
     font-size:30px;
+  }
+
+  table{
+    display:block;
+    overflow-x:auto;
   }
 }

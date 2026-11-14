@@ -1,524 +1,317 @@
-window.addEventListener(
 
-  "pageshow",
+document.addEventListener("DOMContentLoaded", () => {
 
-  function(){
+  const username = document.getElementById("loginUsername");
+  const password = document.getElementById("loginPassword");
 
-    document.getElementById(
-      "loginUsername"
-    ).value = "";
-
-    document.getElementById(
-      "loginPassword"
-    ).value = "";
+  if (username) {
+    username.value = "";
+    username.setAttribute("autocomplete", "off");
   }
-);
+
+  if (password) {
+    password.value = "";
+    password.setAttribute("autocomplete", "new-password");
+  }
+
+});
 
 
+
+setTimeout(() => {
+  const u = document.getElementById("loginUsername");
+  const p = document.getElementById("loginPassword");
+
+  if (u) u.value = "";
+  if (p) p.value = "";
+}, 200);
+
+
+
+
+/* ================= GLOBAL VARIABLES ================= */
 
 let currentUser = "";
-
 let currentUsername = "";
-
 let materials = [];
+let editIndex = -1;
+
+const API_BASE_URL = "http://localhost:5000";
 
 
+/* ================= MATERIAL STORAGE ================= */
 
-/* CLOCK */
+function saveMaterials(){
+  localStorage.setItem("materials", JSON.stringify(materials));
+}
+
+function loadMaterials(){
+  const data = localStorage.getItem("materials");
+  if(data) materials = JSON.parse(data);
+}
+
+loadMaterials();
+
+
+/* ================= LOGIN FIELD RESET (FIX) ================= */
+
+/* ✅ BEST CLEAN FUNCTION */
+function clearLoginFields(){
+  const username = document.getElementById("loginUsername");
+  const password = document.getElementById("loginPassword");
+
+  if(username) username.value = "";
+  if(password) password.value = "";
+}
+
+/* ✅ Runs on fresh load */
+window.addEventListener("load", clearLoginFields);
+
+/* ✅ Runs on back/refresh cache restore */
+window.addEventListener("pageshow", function(){
+  clearLoginFields();
+});
+
+/* ✅ Extra safety */
+window.addEventListener("DOMContentLoaded", clearLoginFields);
+
+
+/* ================= CLOCK ================= */
 
 setInterval(() => {
-
-  const time =
-  document.getElementById("time");
-
+  const time = document.getElementById("time");
   if(time){
-
-    time.innerText =
-    new Date().toLocaleString();
+    time.innerText = new Date().toLocaleString();
   }
-
-},1000);
-
+}, 1000);
 
 
-/* SHOW SIGNUP */
+/* ================= PAGE SWITCH ================= */
 
 function showSignup(){
-
-  document
-  .getElementById("loginBox")
-  .classList.add("hidden");
-
-  document
-  .getElementById("signupBox")
-  .classList.remove("hidden");
+  document.getElementById("loginPage").classList.add("hidden");
+  document.getElementById("signupPage").classList.remove("hidden");
 }
-
-
-
-/* SHOW LOGIN */
 
 function showLogin(){
-
-  document
-  .getElementById("signupBox")
-  .classList.add("hidden");
-
-  document
-  .getElementById("loginBox")
-  .classList.remove("hidden");
+  document.getElementById("signupPage").classList.add("hidden");
+  document.getElementById("loginPage").classList.remove("hidden");
 }
 
 
-
-/* SIGNUP */
+/* ================= SIGNUP ================= */
 
 function signup(){
 
-  const name =
-  document.getElementById(
-    "signupName"
-  ).value.trim();
-
-  const username =
-  document.getElementById(
-    "signupUsername"
-  ).value.trim();
-
-  const password =
-  document.getElementById(
-    "signupPassword"
-  ).value.trim();
+  const name = document.getElementById("signupName").value.trim();
+  const username = document.getElementById("signupUsername").value.trim();
+  const password = document.getElementById("signupPassword").value.trim();
 
   if(!name || !username || !password){
-
-    alert("All fields required");
-
+    alert("All Fields Required");
     return;
   }
 
-  fetch(
-    "http://localhost:5000/register",
-    {
-
-      method:"POST",
-
-      headers:{
-        "Content-Type":"application/json"
-      },
-
-      body:JSON.stringify({
-
-        name,
-        username,
-        password
-      })
-    }
-  )
-
+  fetch(API_BASE_URL + "/register", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({name, username, password})
+  })
   .then(res => res.json())
-
   .then(data => {
-
     alert(data.message);
-
-    if(data.success){
-
-      showLogin();
-    }
-  });
+    if(data.success) showLogin();
+  })
+  .catch(() => alert("Server Not Responding"));
 }
 
 
-
-/* LOGIN */
+/* ================= LOGIN ================= */
 
 function login(){
 
-  const username =
-  document.getElementById(
-    "loginUsername"
-  ).value.trim();
-
-  const password =
-  document.getElementById(
-    "loginPassword"
-  ).value.trim();
-
-  fetch(
-    "http://localhost:5000/login",
-    {
-
-      method:"POST",
-
-      headers:{
-        "Content-Type":"application/json"
-      },
-
-      body:JSON.stringify({
-
-        username,
-        password
-      })
-    }
-  )
-
-  .then(async res => {
-
-    const data =
-    await res.json();
-
-    if(!res.ok){
-
-      alert(data.message);
-
-      return;
-    }
-
-    currentUser =
-    data.user.name;
-
-    currentUsername =
-    data.user.username;
-
-    document
-    .getElementById("loginPage")
-    .classList.add("hidden");
-
-    document
-    .getElementById("dashboard")
-    .classList.remove("hidden");
-
-    document
-    .getElementById("welcome")
-    .innerText =
-    "WELCOME " + currentUser;
-
-    if(data.user.role === "admin"){
-
-      document
-      .getElementById("adminBtn")
-      .classList.remove("hidden");
-
-      document
-      .getElementById("loggedUsersBtn")
-      .classList.remove("hidden");
-
-      loadLoggedEmployees();
-    }
-
-  })
-
-  .catch(() => {
-
-    alert("Server Not Responding");
-  });
-}
-
-
-
-/* LOGOUT */
-
-function logout(){
-
-  fetch(
-    "http://localhost:5000/logout",
-    {
-
-      method:"POST",
-
-      headers:{
-        "Content-Type":"application/json"
-      },
-
-      body:JSON.stringify({
-
-        username:currentUsername
-      })
-    }
-  )
-
-  .then(() => {
-
-    location.reload();
-  });
-}
-
-
-
-/* OPEN PAGE */
-
-function openPage(page){
-
-  const pages = [
-
-    "dashboard",
-
-    "entry",
-
-    "dispatch",
-
-    "locator",
-
-    "adminPanel",
-
-    "loggedUsersPage"
-  ];
-
-  pages.forEach(id => {
-
-    document
-    .getElementById(id)
-    .classList.add("hidden");
-  });
-
-  document
-  .getElementById(page)
-  .classList.remove("hidden");
-}
-
-
-
-/* BACK */
-
-function back(){
-
-  [
-
-    "entry",
-
-    "dispatch",
-
-    "locator",
-
-    "adminPanel",
-
-    "loggedUsersPage"
-
-  ].forEach(id => {
-
-    document
-    .getElementById(id)
-    .classList.add("hidden");
-  });
-
-  document
-  .getElementById("dashboard")
-  .classList.remove("hidden");
-}
-
-
-
-/* MATERIAL ENTRY + DISPATCH */
-
-function submitMaterial(type){
-
-  let name = "";
-  let qty = "";
-  let location = "";
-
-  if(type === "entry"){
-
-    name =
-    document.getElementById(
-      "entryName"
-    ).value;
-
-    qty =
-    document.getElementById(
-      "entryQty"
-    ).value;
-
-    location =
-    document.getElementById(
-      "entryLocation"
-    ).value;
-  }
-
-  else{
-
-    name =
-    document.getElementById(
-      "dispatchName"
-    ).value;
-
-    qty =
-    document.getElementById(
-      "dispatchQty"
-    ).value;
-
-    location =
-    document.getElementById(
-      "dispatchLocation"
-    ).value;
-  }
-
-  if(!name || !qty || !location){
-
-    alert("Fill all fields");
-
+  const username = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
+
+  if(!username || !password){
+    alert("Enter Username & Password");
     return;
   }
 
-  materials.push({
+  fetch(API_BASE_URL + "/login", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({username, password})
+  })
+  .then(res => res.json())
+  .then(data => {
 
-    name,
-    qty,
-    location
-  });
+    if(!data.success){
+      alert(data.message);
+      return;
+    }
+
+    currentUser = data.user.name;
+    currentUsername = data.user.username;
+
+    document.getElementById("loginPage").classList.add("hidden");
+    document.getElementById("signupPage").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+
+    document.getElementById("welcome").innerText =
+      "WELCOME " + currentUser;
+
+    loadCriticalStocks();
+  })
+  .catch(() => alert("Server Not Responding"));
+}
+
+
+/* ================= LOGOUT ================= */
+
+function logout(){
+  fetch(API_BASE_URL + "/logout", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({username: currentUsername})
+  })
+  .finally(() => location.reload());
+}
+
+
+/* ================= NAVIGATION ================= */
+
+function openPage(page){
+
+  ["dashboard","entry","dispatch","locator","adminPanel","loggedUsersPage"]
+  .forEach(id => document.getElementById(id)?.classList.add("hidden"));
+
+  document.getElementById(page)?.classList.remove("hidden");
+
+  if(page === "entry") loadEntryTable();
+  if(page === "dispatch") loadDispatchTable();
+}
+
+function back(){
+  ["entry","dispatch","locator","adminPanel","loggedUsersPage"]
+  .forEach(id => document.getElementById(id)?.classList.add("hidden"));
+
+  document.getElementById("dashboard")?.classList.remove("hidden");
+}
+
+
+/* ================= MATERIAL ================= */
+
+function submitMaterial(type){
+
+  let name, qty, location, receiver = "-";
+
+  if(type === "entry"){
+    name = document.getElementById("entryName").value.trim();
+    qty = document.getElementById("entryQty").value.trim();
+    location = document.getElementById("entryLocation").value.trim();
+  } else {
+    name = document.getElementById("dispatchName").value.trim();
+    qty = document.getElementById("dispatchQty").value.trim();
+    location = document.getElementById("dispatchLocation").value.trim();
+    receiver = document.getElementById("dispatchReceiver").value.trim() || "-";
+  }
+
+  if(!name || !qty || !location){
+    alert("Fill all fields");
+    return;
+  }
+
+  materials.push({type, name, qty, location, receiver, remarks:""});
+  saveMaterials();
 
   loadEntryTable();
-
+  loadDispatchTable();
   loadCriticalStocks();
 
   alert("Saved Successfully");
 }
 
 
-
-/* LOAD ENTRY TABLE */
+/* ================= TABLES ================= */
 
 function loadEntryTable(){
-
-  const table =
-  document.getElementById(
-    "entryTable"
-  );
+  const table = document.getElementById("entryTable");
+  if(!table) return;
 
   table.innerHTML = "";
 
-  materials.forEach(item => {
+  materials.forEach((item,index)=>{
+    if(item.type !== "entry") return;
 
     table.innerHTML += `
-
       <tr>
-
         <td>${item.name}</td>
-
         <td>${item.qty}</td>
-
         <td>${item.location}</td>
-
+        <td>
+          <button onclick="editMaterial(${index})">✏ Edit</button>
+          <button onclick="deleteMaterial(${index})">🗑 Delete</button>
+        </td>
       </tr>
-
     `;
   });
 }
 
 
+function loadDispatchTable(){
+  const table = document.getElementById("dispatchTable");
+  if(!table) return;
 
-/* CRITICAL STOCK */
+  table.innerHTML = "";
+
+  materials.forEach((item,index)=>{
+    if(item.type !== "dispatch") return;
+
+    table.innerHTML += `
+      <tr>
+        <td>${item.name}</td>
+        <td>${item.qty}</td>
+        <td>${item.location}</td>
+        <td>${item.receiver}</td>
+        <td>
+          <button onclick="editMaterial(${index})">✏ Edit</button>
+          <button onclick="deleteMaterial(${index})">🗑 Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+
+/* ================= CRITICAL STOCK ================= */
 
 function loadCriticalStocks(){
 
-  const table =
-  document.getElementById(
-    "criticalTable"
-  );
+  const table = document.getElementById("criticalTable");
+  if(!table) return;
 
   table.innerHTML = "";
 
   materials
-  .filter(item => item.qty <= 5)
-
-  .forEach(item => {
-
-    table.innerHTML += `
-
-      <tr>
-
-        <td>${item.name}</td>
-
-        <td>${item.qty}</td>
-
-        <td>${item.location}</td>
-
-      </tr>
-
-    `;
-  });
-}
-
-
-
-/* LOCATOR */
-
-function searchLocator(){
-
-  const name =
-  document.getElementById(
-    "locName"
-  ).value.toLowerCase();
-
-  const result =
-  materials.find(item =>
-
-    item.name
-    .toLowerCase()
-    .includes(name)
-  );
-
-  if(result){
-
-    alert(
-
-      "Found at: " +
-
-      result.location
-    );
-  }
-
-  else{
-
-    alert("Item Not Found");
-  }
-}
-
-
-
-/* ADMIN */
-
-function changePassword(){
-
-  alert("Password Changed");
-}
-
-
-
-/* LOGGED EMPLOYEES */
-
-function loadLoggedEmployees(){
-
-  fetch(
-    "http://localhost:5000/logged-users"
-  )
-
-  .then(res => res.json())
-
-  .then(data => {
-
-    const table =
-    document.getElementById(
-      "loggedUsersTable"
-    );
-
-    table.innerHTML = "";
-
-    data.users.forEach(user => {
-
+    .filter(i => parseInt(i.qty) <= 5)
+    .forEach(i=>{
       table.innerHTML += `
-
         <tr>
-
-          <td>${user.name}</td>
-
-          <td>${user.username}</td>
-
-          <td>🟢 Online</td>
-
+          <td>${i.name}</td>
+          <td>${i.qty}</td>
+          <td>${i.location}</td>
+          <td>⚠ Critical</td>
         </tr>
-
       `;
     });
-  });
 }
+
+
+/* ================= PLACEHOLDERS ================= */
+
+function editMaterial(index){}
+function deleteMaterial(index){}
+function loadLoggedEmployees(){}
+function changePassword(){}
+function searchLocator(){}
